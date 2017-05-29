@@ -1,48 +1,68 @@
 #!/bin/bash
-# Updates all git repos that are found under PROJECTS directory.
+# Updates all git repositories that are found under PROJECTS directory.
 # Notes:
 # - SSH keys MUST be loaded beforehand
-# - If using with cron, the SSH key must not have password
+# - If using with cron, the SSH key must NOT have password
 #
 set -u
 set -e
 
 PROJECTS="/home/mclang/Projects"
 
-# Make sure globstar is enabled
+
+function print_w() {
+	echo -e "!!! $1"
+}
+
+function git_pull() {
+	if [[ -z "$1" || ! -d "$1" ]]; then
+		print_w "Directory '$1' does not exist"
+		return 0
+	fi
+	cd "$1"
+	if git status -uno | grep -q "modified"; then
+		print_w "Directory '$1' has local modifications, using normal pull without rebase"
+		REBASE='--no-rebase'
+	else
+		REBASE='--rebase=preserve'
+	fi
+	# Using 'rebase' moves local commits into the end of the fetched commits.
+	# Using 'preserve' preserver local merges, i.e they are not flattened during rebase.
+	git pull $REBASE
+	git log -2 --pretty="%Cred%h %Cgreen%ai %Cblue%<(10,trunc)%cn %Creset%s"
+}
+
+
+# Make sure globstar is enabled for searching git repositories under PROJECTS directory
 shopt -s globstar
 
-# for GITDIR in "$PROJECTS"/**/.git; do
+echo -e "\n\n###  UPDATING GIT REPOSITORIES UNDER '$PROJECTS'  ###"
 for GITDIR in "$PROJECTS"/*/.git; do
 	PROJECTDIR=$(dirname "$GITDIR")
+	echo -e "\n==> Updating '$PROJECTDIR' ..."
 
 	# Normal glob is enough to check what directories to skip
 	if [[ "$PROJECTDIR" == *!git* ]]; then
-		echo -en "\n\nWARNING: Skipping project: '$PROJECTDIR'\n\n"
-		continue
-	fi
-
-	if [[ "$PROJECTDIR" == "/home/mclang/Projects/GenerateDriveEvents" ]]; then
+		print_w "marked to be skipped (has '!git' in path name)"
 		continue
 	fi
 	if [[ ! -e "$GITDIR/index" ]]; then
-		echo -en "\n\nWARNING: Not a GIT project: '$PROJECTDIR'\n\n"
+		print_w "This seems NOT to be a git repository"
 		continue
 	fi
-	echo -e "\n==> Updating '$PROJECTDIR'..."
-	cd "$PROJECTDIR"
-	# Using 'rebase' moves local commits into the end of the fetched commits.
-	# Using 'preserver' preserver local merges, i.e they are not flattened during rebase.
-	git pull --rebase=preserve
-	git log -1 --pretty="%Cred%h %Cgreen%ai %Cblue%<(10,trunc)%cn %Creset%s"
+	git_pull "$PROJECTDIR"
 done
 shopt -u globstar
 
-exit
 
-# Other git repositories:
-echo -e "\n==> Updating 'User DotFiles'..."
-cd "$HOME/.dotconfig"
-git pull --rebase=preserve
-git log -1 --pretty="%Cred%h %Cgreen%ai %Cblue%<(10,trunc)%cn %Creset%s"
+# Pull also these git repositories located outside of PROJECTS directory:
+declare -A GITREPOS=(
+	["$HOME/.dotconfig"]='User dotconfig'
+	["$HOME/bin"]='User bin directory'
+)
+echo -e "\n\n###  UPDATING OTHER GIT REPOSITORIES  ###"
+for DIR in "${!GITREPOS[@]}"; do
+	echo -e "\n==> Updating '${GITREPOS[$DIR]}' ..."
+	git_pull "$DIR"
+done
 
