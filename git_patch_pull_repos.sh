@@ -14,20 +14,37 @@ function print_w() {
 	echo -e "!!! $1"
 }
 
+
+function update_submodules() {
+	# TODO:
+	# 1. save current directory
+	# 2. cd into each submodule directory
+	# 3. check that the module IS NOT "HEAD detached at xxx" -> ERROR if it is
+	# 4. update submodule
+	git submodule update --remote --rebase
+}
+
+
 function git_pull() {
 	if [[ -z "$1" || ! -d "$1" ]]; then
 		print_w "Directory '$1' does not exist"
 		return 0
 	fi
 	cd "$1"
+
+	# Check if project has submodules and update them
+	if [[ -e ".gitmodules" ]]; then
+		update_submodules
+	fi
+
+	# Using 'rebase' moves **local** commits into the end of the **fetched** commits.
+	# Using 'preserve' preserver local merges, i.e they are not flattened during rebase.
 	if git status -uno | grep -q "modified"; then
-		print_w "Directory '$1' has local modifications, using normal pull without rebase"
+		print_w "Directory '$1' has local modifications! => Using normal pull without rebase"
 		REBASE='--no-rebase'
 	else
 		REBASE='--rebase=preserve'
 	fi
-	# Using 'rebase' moves local commits into the end of the fetched commits.
-	# Using 'preserve' preserver local merges, i.e they are not flattened during rebase.
 	git pull $REBASE
 	git log -2 --pretty="%Cred%h %Cgreen%ai %Cblue%<(10,trunc)%cn %Creset%s"
 }
