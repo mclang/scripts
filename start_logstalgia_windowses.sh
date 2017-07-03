@@ -1,15 +1,15 @@
 #!/bin/bash
-# Starts logstalgia for each server
+# Starts logstalgia for each defined server
 #
 set -u
 set -e
 
 # Default Logstalgia parameters
 LOGS_PARAMS="--hide-paddle"
-LOGS_WIN_SIZE="480x540"
+LOGS_WIN_SIZE="600x540"         # 600px is enough for 'Kiho Tres (AWS) to fit in title
 
 # Get screen size using 'xrandr' if available. If there is several monitors, use the last one.
-WDIV=4
+WDIV=3
 HDIV=2
 TBARH=10
 if hash xrandr 2>/dev/null && hash bc 2>/dev/null; then
@@ -27,6 +27,11 @@ declare -A SERVERS=(
 	['mckiho']='/var/log/httpd/access_log'
 	['mctres']='/var/log/nginx/access.log'  # $(ssh mctres ls "/var/log/nginx/*access.log")
 )
+declare -A SERVER_NAMES=(
+	['mcalpha']='Kiho Alpha'
+	['mckiho']='IsoKiho'
+	['mctres']='Kiho Tres (AWS)'
+)
 
 
 # Using '!' is needed when looping THE KEYS of an associative array!
@@ -36,12 +41,13 @@ for server in "${!SERVERS[@]}"; do
 	if (( ${#FILES[@]} == 0 )); then
 		echo "ERROR: No log files specified for '$server'!" && continue
 	fi
-	echo "Starting Logstalgia for '$server: ${FILES[@]}'"
+	NAME="${SERVER_NAMES[$server]}"
+	echo "Starting Logstalgia for '$NAME: ${FILES[@]}'"
 
 	# Remember to use '-t' with SSH - otherwise 'tail' stays up even after SSH connection is killed
 	# No need(?) to '2>&1' b/c 'nohup' does that already
 	if (( ${#FILES[@]} == 1 )); then
-		nohup ssh -t "$server" tail -f "${FILES[0]}" | logstalgia -$LOGS_WIN_SIZE $LOGS_PARAMS > /dev/null &
+		nohup ssh -t "$server" tail -f "${FILES[0]}" | logstalgia -$LOGS_WIN_SIZE $LOGS_PARAMS --title "$NAME" > /dev/null &
 	else
 		echo "==> multitail here !!!"
 		# http://seengee.co.uk/2012/09/08/using-multitail-for-monitoring-multiple-log-files/
