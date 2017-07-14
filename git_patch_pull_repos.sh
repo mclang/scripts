@@ -42,7 +42,11 @@ function update_repo() {
 	# - Using 'rebase' moves **local** commits into the end of the **fetched** remote commits.
 	# - Using 'preserve' preserves local merges, i.e they are not flattened during rebase.
 	if [[ -e ".git/svn/.metadata" ]]; then
-		CMD="svn2git --metadata --rebase"
+		echo "==> Using 'svn2git' to get commits from old subversion repo..."
+		svn2git --metadata --rebase --username mclang --password zaDam3!
+		git pull --rebase
+		# sometimes needed: git rebase origin/master
+		CMD="git push --all"
 	elif git status -uno | grep -q "modified"; then
 		print_w "Directory '$1' has local modifications! => Using normal pull without rebase"
 		CMD='git pull --no-rebase'
