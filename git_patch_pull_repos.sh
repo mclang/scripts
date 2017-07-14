@@ -25,7 +25,7 @@ function update_submodules() {
 }
 
 
-function git_pull() {
+function update_repo() {
 	if [[ -z "$1" || ! -d "$1" ]]; then
 		print_w "Directory '$1' does not exist"
 		return 0
@@ -37,15 +37,19 @@ function git_pull() {
 		update_submodules
 	fi
 
-	# Using 'rebase' moves **local** commits into the end of the **fetched** commits.
-	# Using 'preserve' preserver local merges, i.e they are not flattened during rebase.
-	if git status -uno | grep -q "modified"; then
+	# NOTES:
+	# - First check if this repo is for migrating from svn using Ruby 'svn2git' gem
+	# - Using 'rebase' moves **local** commits into the end of the **fetched** remote commits.
+	# - Using 'preserve' preserves local merges, i.e they are not flattened during rebase.
+	if [[ -e ".git/svn/.metadata" ]]; then
+		CMD="svn2git --metadata --rebase"
+	elif git status -uno | grep -q "modified"; then
 		print_w "Directory '$1' has local modifications! => Using normal pull without rebase"
-		REBASE='--no-rebase'
+		CMD='git pull --no-rebase'
 	else
-		REBASE='--rebase=preserve'
+		CMD='git pull --rebase=preserve'
 	fi
-	git pull $REBASE
+	$CMD
 	git log -2 --pretty="%Cred%h %Cgreen%ai %Cblue%<(10,trunc)%cn %Creset%s"
 }
 
@@ -67,7 +71,7 @@ for GITDIR in "$PROJECTS"/*/.git; do
 		print_w "This seems NOT to be a git repository"
 		continue
 	fi
-	git_pull "$PROJECTDIR"
+	update_repo "$PROJECTDIR"
 done
 shopt -u globstar
 
@@ -80,6 +84,6 @@ declare -A GITREPOS=(
 echo -e "\n\n###  UPDATING OTHER GIT REPOSITORIES  ###"
 for DIR in "${!GITREPOS[@]}"; do
 	echo -e "\n==> Updating '${GITREPOS[$DIR]}' ..."
-	git_pull "$DIR"
+	update_repo "$DIR"
 done
 
