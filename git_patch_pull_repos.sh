@@ -58,6 +58,30 @@ function update_repo() {
 }
 
 
+# Check that GIT SSH key is loaded (not bullet proof though!)
+# Try to load first found git related key if possible.
+if ! ssh-add -l | grep -iq 'git'; then
+	if (( $(pgrep -cu $UID ssh-agent) == 0 )); then
+		print_w "SSH agent is not running - cannot load Git SSH key"
+		echo "==> Load agent and Git SSH key manually"
+		exit
+	fi
+	GITKEY=$(find $HOME/.ssh -type f -regex ".*git.*" -not -name "*.pub")
+	if [[ -z "$GITKEY" ]]; then
+		print_w "Could not locate Git SSH key file"
+		echo "==> Load agent and Git SSH key manually"
+		exit
+	fi
+	echo -e "\n###  SSH key needed for Git repo update  ###\n"
+	ssh-add "$GITKEY"
+	if ! ssh-add -l | grep -iq 'git'; then
+		print_w "Loading Git SSH key failed"
+		echo "==> Load agent and Git SSH key manually"
+		exit
+	fi
+fi
+
+
 # Make sure globstar is enabled for searching git repositories under PROJECTS directory
 shopt -s globstar
 
