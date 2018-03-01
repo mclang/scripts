@@ -54,7 +54,7 @@ function update_repo() {
 		CMD='git pull --rebase=preserve'
 	fi
 	$CMD
-	git log -2 --pretty="%Cred%h %Cgreen%ai %Cblue%<(10,trunc)%cn %Creset%s"
+    git log -2 --date=short --pretty="%Cred%h %Cgreen%ad (%<(12,trunc)%ar) %Cblue%<(15,trunc)%cn %C(auto)%d %s"
 }
 
 
