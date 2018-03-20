@@ -1,13 +1,22 @@
 #!/bin/bash
-# Updates all git repositories that are found under PROJECTS directory.
-# Notes:
+# Updates all git repositories that are found under PROJECTS directory,
+# as well as those defined in GITREPOS array.
+#
+# NOTES:
 # - SSH keys MUST be loaded beforehand
 # - If using with cron, the SSH key must NOT have password
 #
 set -u
 set -e
 
+# Directory under which most of the git repositories are:
 PROJECTS="/home/mclang/Projects"
+
+# Other miscellaneous git repos:
+declare -A GITREPOS=(
+	["$HOME/.dotconfig"]='User dotconfig'
+	["$(dirname "$(readlink -f "$0")")"]="The bin directory of this 'git_patch_pull' script"
+)
 
 
 function print_w() {
@@ -104,11 +113,6 @@ done
 shopt -u globstar
 
 
-# Pull also these git repositories located outside of PROJECTS directory:
-declare -A GITREPOS=(
-	["$HOME/.dotconfig"]='User dotconfig'
-	["$HOME/bin"]='User bin directory'
-)
 echo -e "\n\n###  UPDATING OTHER GIT REPOSITORIES  ###"
 for DIR in "${!GITREPOS[@]}"; do
 	echo -e "\n==> Updating '${GITREPOS[$DIR]}' ..."
