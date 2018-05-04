@@ -1,12 +1,21 @@
 #!/bin/bash
 # Vivaldi and Opera cannot play some videos on Linux unless the ffmpeg library they use is replaced with proper one.
 #
-# Updated: 06.02.2018
+# Updated: 04.05.2018
 #
 set -e
 set -u
 
-FFMPEG_ZIP="https://github.com/iteufel/nwjs-ffmpeg-prebuilt/releases/download/0.28.0/0.28.0-linux-x64.zip"
+# Testing against '$1' directly does not work b/c of 'set -u'
+if [[ -z "$@" ]]; then
+	echo ""
+	echo "USAGE:"
+	echo "$ $(basename "$0") https://github.com/iteufel/nwjs-ffmpeg-prebuilt/releases/download/X.YY.Z/X.YY.Z-linux-x64.zip"
+	echo ""
+	exit 1
+fi
+
+FFMPEG_ZIP="$1"
 FFMPEG_LIB="libffmpeg.so"
 LIB_DIR="/usr/share/vivaldi-stable/lib"
 TMP_DIR="/tmp/$(basename $0 '.sh')"
