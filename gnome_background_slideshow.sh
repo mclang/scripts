@@ -5,9 +5,10 @@
 # */30 * * * * <user> /<path>/gnome_background_slideshow.sh > /dev/null 2>&1
 #
 
-# This is needed so that 'gsettings' work when run from cron:
+# This is needed so that 'gsettings' work when run from cron.
+# Use FULL 'gnome-session-binary' match so that e.g instance started by GDM is skipped
 if [[ -z "$DBUS_SESSION_BUS_ADDRESS" ]]; then
-	PID=$(pgrep gnome-session)
+	PID=$(pgrep -fx /usr/lib/gnome-session-binary)
 	export DBUS_SESSION_BUS_ADDRESS=$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/$PID/environ | cut -d= -f2-)
 fi
 
