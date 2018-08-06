@@ -13,7 +13,7 @@ if [[ -z "$DBUS_SESSION_BUS_ADDRESS" ]]; then
 fi
 
 # Select random image from given folder or its subfolder
-DIR="/home/mclang/Shares/Syncthing/mastercom-kiho/wallpapers"
+DIR="/home/mclang/Pictures/Wallpapers"
 PIC=$(find "$DIR" -type f | /usr/bin/shuf -n1)
 
 # Use 'gsettings' to set new background image:
