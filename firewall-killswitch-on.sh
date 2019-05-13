@@ -8,23 +8,31 @@ set -u
 # TODO:
 # - Loop interfaces and use the first 'tun' found
 # - Use GW from the found 'tun' instead of static one
-VPNIF='tun0'
-VPNGW='196.196.200.51'
+VPN_IF='tun0'
+VPN_GATEWAYS=(
+	# fi52.nordvpn.com.tcp
+	"196.196.200.19"
+	# fi65.nordvpn.com.tcp
+	"196.196.201.197"
+)
 
-if ! ip addr show | grep -q "$VPNIF"; then
-	echo "OpenVPN interface '"$VPNIF"' not found!"
+
+if ! ip addr show | grep -q "$VPN_IF"; then
+	echo "OpenVPN interface '"$VPN_IF"' not found!"
 	exit 1
 fi
 
-if hash /usr/sbin/ufw 2>/dev/null; then
+if command -v ufw >/dev/null 2>&1; then
 	sudo ufw reset
 	# Deny ALL normal network traffic
 	sudo ufw default deny incoming
 	sudo ufw default deny outgoing
 	# Allow outgoing using VPN only
-	sudo ufw allow out on "$VPNIF" from any to any
-	# Needed so that initial connection to 'fi50.nordvpn.com' can be done
-	sudo ufw allow out from any to "$VPNGW"
+	sudo ufw allow out on "$VPN_IF" from any to any
+	# Needed so that the **initial** connection to NordVPN servers can be established
+	for VPNGW  in "${VPN_GATEWAYS[@]}"; do
+		sudo ufw allow out from any to "$VPNGW"
+	done
 	sudo ufw enable
 	sudo ufw status
 else
