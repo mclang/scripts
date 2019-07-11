@@ -48,8 +48,9 @@ function update_repo() {
 
 	# NOTES:
 	# - First check if this repo is for migrating from svn using Ruby 'svn2git' gem
-	# - Using 'rebase' moves **local** commits into the end of the **fetched** remote commits.
-	# - Using 'preserve' preserves local merges, i.e they are not flattened during rebase.
+	# - Using 'rebase' moves **local** commits into the end of the **fetched** upstream commits
+	# - Using 'merges' preserves local merges, i.e they are not flattened during rebase
+	# - Using 'autostash' stashed local changes before rebase merge and pops them afterwards
 	if [[ -e ".git/svn/.metadata" ]]; then
 		echo "==> Using 'svn2git' to get commits from old subversion repo..."
 		svn2git --metadata --rebase --username mclang --password zaDam3!
@@ -57,13 +58,14 @@ function update_repo() {
 		# sometimes needed: git rebase origin/master
 		CMD="git push --all"
 	elif git status -uno | grep -q "modified"; then
-		print_w "Directory '$1' has local modifications! => Using normal pull without rebase"
-		CMD='git pull --no-rebase'
+		print_w "Directory '$1' has local modifications!\n--> Using NORMAL pull WITHOUT rebase!"
+		CMD='git pull --rebase=false'
 	else
-		CMD='git pull --rebase=preserve'
+		CMD='git pull --rebase=merges --autostash'
 	fi
+	echo "COMMAND: '$CMD'"
 	$CMD
-    git log -2 --date=short --pretty="%Cred%h %Cgreen%ad (%<(12,trunc)%ar) %Cblue%<(15,trunc)%cn %C(auto)%d %s"
+	git log -2 --date=short --pretty="%Cred%h %Cgreen%ad (%<(12,trunc)%ar) %Cblue%<(15,trunc)%cn %C(auto)%d %s"
 }
 
 
