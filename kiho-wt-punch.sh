@@ -101,11 +101,18 @@ ${LOGIN_LOGOUT_INFO}
 EOF
 )"
 
-echo -e "JSON PAYLOAD:\n$JSON_PAYLOAD"
+# echo -e "JSON PAYLOAD:\n$JSON_PAYLOAD"
 
+# Use curl to POST data:
+# -X: Specify request type, here POST
+# -s: Make curl silent, i.e do not print progress bars and the like
+# -o /dev/null: Redirect response body into '/dev/null'
+# -D -:         Dump headers into file, here stdout
+# -H: Specify HTTP headers
+# -d: Response data, JSON body
 /usr/bin/curl \
 	-X POST \
-	-s \
+	-s -o /dev/null -D - \
 	-H "Authorization: $API_KEY" \
 	-H "Content-Type: application/json" \
 	-d "$JSON_PAYLOAD" \
