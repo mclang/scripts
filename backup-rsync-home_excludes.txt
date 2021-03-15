@@ -1,0 +1,171 @@
+################################################################################
+# Here are some examples of exclude/include matching:
+# - *.o" would exclude all names matching *.o
+# - /foo" would exclude a file (or directory) named foo in the transfer-root directory
+# - foo/" would exclude any directory named foo
+# - /foo/*/bar" would exclude any file named bar which is at two levels below a directory named foo in the transfer-root directory
+# - /foo/**/bar" would exclude any file named bar two or more levels below a directory named foo in the transfer-root directory
+#
+# The combination of "+ */", "+ *.c", and "- *" would include all directories and C source files but nothing else (see also the --prune-empty-dirs option)
+# The combination of "+ foo/", "+ foo/bar.c", and "- *" would include only the foo directory and foo/bar.c (the foo directory must be explicitly included or it would be excluded by the "*")
+#
+# NOTES:
+# - Rules are RELATIVE to the SOURCE directory
+# - The FIRST matching rule is acted on, so consider the order CAREFULLY
+# - Watch for trailing `/`: Using it in the END means that the CONTENTS are synched into the destination, not the directory!
+# - Check backups for Steam games and the like.
+#
+# Updated: 15.03.2021
+#
+# !!! USED PREVIOUSLY TO __MOVE__ HOME - FIX FOR PROPER BACKUP !!!
+# - Enable more excludes
+# - Exclude security things like SSH keys, etc
+# - Check `gitignore.io` for more excludes
+#
+
+###  USE `[!]` IN NAME TO EXCLUDE IT  ###
+#- *\[!\]*
+
+
+###  BACKUP FILES, CACHES, TEMPS, ETC  ###
+# NOTE: These EXCLUDES all matching files ALSO from directories included below, e.g `.ssh/id_rsa.bak`!
+- .cache
+- .DS_Store*/
+- Recycled*/
+- RECYCLED/
+- System Volume Information/
+- *[Tt]rash*/
+- thumbnail
+- *.~*
+- *.[Bb][Aa][Kk]
+- *.[Oo][Ll][Dd]
+- *.[Oo][Rr][Gg]
+- *.[Tt][Mm][Pp]
+- *.[Tt][Ee][Mm][Pp]
+- *.[Ss][Ww][Pp]
+- Enpass/Backups/
+
+
+###  IMPORTANT THINGS THAT HAVE TO BE INCLUDED  ###
+# Including Steam and other game saves...
+# NOTE: Directory must be first INCLUDED then EXCLUDED - otherwise its contents are NOT scanned!
++ .config/
++ .config/darktable/
++ .config/dispcalGUI/
++ .config/lutris/
++ .config/StardewValley/
++ .config/syncthing/
++ .config/syncthing/config.xml
+- .config/syncthing/*
++ .config/vivaldi/
++ .config/vivaldi/Default/
++ .config/vivaldi/Default/Sessions/
+- .config/vivaldi/Default/*
+- .config/vivaldi/*
+- .config/*
+
++ .local/
++ .local/share/
++ .local/share/Almost*Human/
++ .local/share/Daedalic Entertainment GmbH/
++ .local/share/DoorKickers/
+# + .local/share/Euro Truck Simulator 2/    NOTE: HUGE with mods and the like!
++ .local/share/[Ff]aster[Tt]han[Ll]ight/
++ .local/share/feral-interactive/
++ .local/share/FrozenSynapse/
++ .local/share/Paradox Interactive/
++ .local/share/Terraria/
++ .local/share/twotribes/
+- .local/share/*
+- .local/*
+
+- .mozilla/**/*crashrecovery*
+- .mozilla/**/*default-backup/
+- .mozilla/**/Crash Reports/
+- .mozilla/**/Pending Pings/
++ .mozilla/
++ .mozilla/firefox/
++ .mozilla/firefox/installs.ini
++ .mozilla/firefox/profiles.ini
++ .mozilla/firefox/*/
++ .mozilla/firefox/*/bookmarkbackups/
++ .mozilla/firefox/*/places.sqlite
+- .mozilla/firefox/*/*
+- .mozilla/firefox/*
+- .mozilla/*
+
++ .ssh/
+- .ssh/config
++ .zsnes/
+
+
+### CODING RELATED THINGS  ###
+# NOTE: Are git things really needed b/c they are, well you know, in GitHub?
++ .git/
++ .gitignore
++ .gitmodules
++ .htaccess
++ */**/.github/
++ */**/.vscode/
++ .wakatime-project
+- build/
+- packages/
+- [Dd]ebug*/
+- [Rr]elease*/
+- x[68[46]/
+- [Aa][Rr][Mm]*/
+# - */**/[Bb]in/    # NOTE: Could excludes also needed binaries!
+- [Oo]bj/
+- [Ll]og/
+
+
+###  GOOGLE PICASA THINGS FROM TIMES OF OLD  ##
+# NOTE: Especially `.picasaoriginals` is important b/c it contains original photos!
++ [Pp]icasa.ini
++ .picasa.ini
++ .picasaoriginals/
+
+
+###  SYNCTHING AND OTHER PUBLIC/SHARED  ###
++ .stignore
+- .stversions/
+- .SyncArchive/
+- .SyncID
+- [Ss]hare*/
+
+
+###  UNNECESSARY XDG DEFAULT DIRECTORIES  ##
+# NOTE: Configured in `~/.config/user-dirs.dirs`
+- Desktop/
+#- Downloads/
+- Public/
+
+
+###  USELESS CRUFT FROM LINUX  ###
+- flatpak/
+- go/
+- lost+found
+- snap/
+
+
+###  USELESS CRUFT FROM WINDOWS  ###
+- gegl*/
+- Intelli-studio/
+- MAGIX*/
+- MotionDV*/
+- MP Navigator EX/
+- My DVDs/
+- My Ifolor*/
+- My Music/
+- Picasa/
+- Ulead*/
+- [Dd]esktop.ini
+- [Tt]humbs.db
+- *Thumb*
+- pagefile.sys
+
+
+###  Exclude ALL HIDDEN `.` files and directories  ###
+# --> No need to exclude e.g `.dbus` individually
+# NOTE: This MUST be the LAST rule in case some hidden things are INCLUDED above!
+- .*
