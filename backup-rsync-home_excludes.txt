@@ -30,13 +30,14 @@
 ###  BACKUP FILES, CACHES, TEMPS, ETC  ###
 # NOTE: These EXCLUDES all matching files ALSO from directories included below, e.g `.ssh/id_rsa.bak`!
 - .cache
+- [Cc]ache*/
 - .DS_Store*/
 - Recycled*/
 - RECYCLED/
 - System Volume Information/
 - *[Tt]rash*/
 - thumbnail
-- *.~*
+#- *.~* EXCLUDES HIDDEN FILES !!!
 - *.[Bb][Aa][Kk]
 - *.[Oo][Ll][Dd]
 - *.[Oo][Rr][Gg]

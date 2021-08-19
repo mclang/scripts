@@ -1,0 +1,92 @@
+#
+# Excludes for `rsync` for moving ALL things to new computer. Example command:
+# ```
+# $ rsync -av --delete --delete-excluded --exclude-from=/home/mclang/bin/backup-rsync-exclude-useless-cruft.txt /home/mclang <target destination dir>
+# ```
+#
+# Updated: 19.08.2021
+#   
+
+###  BACKUP FILES, CACHES, TEMPS, ETC  ###
+# NOTE: These EXCLUDES all matching files ALSO from directories included below, e.g `.ssh/id_rsa.bak`!
+- .cache
+- [Cc]ache*/
+- .DS_Store*/
+- Recycled*/
+- RECYCLED/
+- System Volume Information/
+- *[Tt]rash*/
+- thumbnail
+#- *.~* EXCLUDES HIDDEN FILES !!!
+- *.[Bb][Aa][Kk]
+- *.[Oo][Ll][Dd]
+- *.[Oo][Rr][Gg]
+- *.[Tt][Mm][Pp]
+- *.[Tt][Ee][Mm][Pp]
+- *.[Ss][Ww][Pp]
+- Enpass/Backups/
+
+# Beacause NOT all hidden files should be exluded, here is handmade one:
+- .cert/
+- .dotnet/
+- .eclipse/
+- .gnupg/
+- .java/
+- .kde/
+- .maptool/
+- .mono/
+- .npm/
+- .nuget/
+- .nv/
+- .omnisharp/
+- .pki/
+- .puppetlabs/
+- .redhat/
+- .renpy/
+- .rstudio-desktop/
+- .steam/
+- .swt/
+- .synergy/
+- .templateengine/
+- .tmux/
+- .uml/
+- .vscode/
+- .zoom/
+
+
+###  SYNCTHING AND OTHER PUBLIC/SHARED  ###
++ .stignore
+- .stversions/
+- .SyncArchive/
+- .SyncID
+
+
+###  UNNECESSARY XDG DEFAULT DIRECTORIES  ##
+# NOTE: Configured in `~/.config/user-dirs.dirs`
+- Desktop/
+- Public/
+
+
+###  USELESS CRUFT FROM LINUX  ###
+- .ansible/
+- flatpak/
+- go/
+- lost+found
+- snap/
+
+
+###  USELESS CRUFT FROM WINDOWS  ###
+- gegl*/
+- Intelli-studio/
+- MAGIX*/
+- MotionDV*/
+- MP Navigator EX/
+- My DVDs/
+- My Ifolor*/
+- My Music/
+- Picasa/
+- Ulead*/
+- [Dd]esktop.ini
+- [Tt]humbs.db
+- *Thumb*
+- pagefile.sys
