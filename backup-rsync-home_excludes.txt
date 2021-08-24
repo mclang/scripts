@@ -13,9 +13,9 @@
 # - Rules are RELATIVE to the SOURCE directory
 # - The FIRST matching rule is acted on, so consider the order CAREFULLY
 # - Watch for trailing `/`: Using it in the END means that the CONTENTS are synched into the destination, not the directory!
-# - Check backups for Steam games and the like.
+# - Check backups for Steam games and the like (https://www.toptal.com/developers/gitignore/api/vim,linux)
 #
-# Updated: 15.03.2021
+# Updated: 24.08.2021
 #
 # !!! USED PREVIOUSLY TO __MOVE__ HOME - FIX FOR PROPER BACKUP !!!
 # - Enable more excludes
@@ -37,13 +37,14 @@
 - System Volume Information/
 - *[Tt]rash*/
 - thumbnail
+- *~
 #- *.~* EXCLUDES HIDDEN FILES !!!
-- *.[Bb][Aa][Kk]
-- *.[Oo][Ll][Dd]
-- *.[Oo][Rr][Gg]
-- *.[Tt][Mm][Pp]
-- *.[Tt][Ee][Mm][Pp]
-- *.[Ss][Ww][Pp]
+- *[.-_][Bb][Aa][Kk]
+- *[.-_][Oo][Ll][Dd]
+- *[.-_][Oo][Rr][Gg]
+- *[.-_][Tt][Mm][Pp]
+- *[.-_][Tt][Ee][Mm][Pp]
+- *[.-_][Ss][Ww][Pp]
 - Enpass/Backups/
 
 
