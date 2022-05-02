@@ -40,4 +40,5 @@ tags
 
 # Custom git ignores
 *.cfg
+*.json
 
