@@ -44,12 +44,13 @@ function http_post_file ()
 
 function print_data ()
 {
-	local head="$1"
+	local head="${1^^}" # Echo header always in UPPERCASE
 	local data="$2"
 	for LN in "$head" "'''" "$data" "'''"; do
 		echo "$LN"
 	done
 }
+
 
 ### Get ALL Users
 # http_post '{ "query": "{ users { nodes { id name } } }" }' | jq -r '.data.users.nodes[] | [.id, .name] | @csv'
@@ -62,11 +63,16 @@ TEAM_MCL='98c9f31b-0d35-44f1-875c-6a53d75fc58a'
 # TEAM_IOT='e9fea5ce-6dc7-4c80-b54c-30f9fdcf7772'
 
 ### Get ALL the issues assigned to the selected team:
-# !!! TODO to prevent duplicate issues !!!
+# http_post "{ \"query\": \"{ team (id: \\\"$TEAM_MCL\\\") { issues { nodes { identifier title state { name} }}}}\"}" | jq -cr '.data.team.issues.nodes[] | [.identifier, .title, .state.name] | @tsv'
 
-### Get ALL Templates
-# http_post '{ "query": "{ templates { id name team { name id } creator { displayName } } }" }' | jq -r '.data.templates[]'
+### Get issues with certain TITLE that are NOT 'Canceled' or 'Done'
+# http_post "{ \"query\": \"{ issues(filter: { title: { eq: \\\"Thursday - 2022-05-19\\\" } state: { name: { nin: [\\\"Canceled\\\", \\\"Done\\\"] } } }) { nodes { identifier title state { name} }}}\" }"
+# exit
+
+### Get templates for the team
+# http_post "{ \"query\": \"{ team (id: \\\"$TEAM_MCL\\\") { templates { nodes {id name description } } } }\"}" | jq -cr '.data.team.templates.nodes[] | [.id, .name, .description] | @tsv'
 # TODO: Select only the ones starting with 'Every-'
+
 
 # Array of templates for recurring issues.
 # Take the IDs from e.g the template edit link.
@@ -79,29 +85,42 @@ TEMPLATES=(
 )
 
 TEAMID="$TEAM_MCL"
-PARENT="3a7702ec-47e6-4d94-ae0b-b68196cbf8c7"   # Testin API 101 (MCL-22)
+PARENT=""   # Testin API 101 (MCL-22): 3a7702ec-47e6-4d94-ae0b-b68196cbf8c7
 for TPLID in "${TEMPLATES[@]}"; do
 	echo "GETTING TEMPLATE DATA FOR '$TPLID'..."
 	QUERY="{ \"query\":\"query { template(id: \\\"${TPLID}\\\") { templateData }}\" }"
 	TDATA=$(http_post "$QUERY" | jq -cr '.data.template.templateData')
 	# print_data "RAW TEMPLATE DATA" "$TDATA"
 	TITLE=$(echo "$TDATA" | jq -cr '.title')
-	DESCD=$(echo "$TDATA" | jq -cr '.descriptionData' | sed 's/"/\\\\\\"/g')
+	DESCD=$(echo "$TDATA" | jq -cr '.descriptionData' | sed 's/"/\\\\\\"/g')    # Replaces all `"` in description data with `\\\"`
 	ASSID=$(echo "$TDATA" | jq -cr '.assigneeId')
 	STAID=$(echo "$TDATA" | jq -cr '.stateId')
 	PRIOR=$(echo "$TDATA" | jq -cr '.priority')
 	DUEDATE=$(date +'%F' --date "${TITLE}")
 	ESTIMATE="2"
-	echo "Title:    '$TITLE'"
-	echo "Assignee: '$ASSID'"
-	echo "State ID: '$STAID'"
-	echo "Priority: '$PRIOR'"
-	echo "Due date: '$DUEDATE'"
-	echo "Estimate: '$ESTIMATE'"
-	TITLE="${TITLE} - $DUEDATE"
-	echo "==> Creating issue '$TITLE'"
-	QUERY="{ \"query\": \"mutation IssueCreate { issueCreate( input: { title: \\\"${TITLE}\\\" descriptionData: \\\"${DESCD}\\\" teamId: \\\"${TEAMID}\\\" assigneeId: \\\"${ASSID}\\\" parentId: \\\"${PARENT}\\\" stateId: \\\"${STAID}\\\" dueDate: \\\"${DUEDATE}\\\" estimate: $ESTIMATE priority: $PRIOR }) { success issue {id state {name}} } }\" }"
+	echo "Template title: '$TITLE'"
+	echo "Assignee:       '$ASSID'"
+	echo "State ID:       '$STAID'"
+	echo "Priority:       '$PRIOR'"
+	echo "Due date:       '$DUEDATE'"
+	echo "Estimate:       '$ESTIMATE'"
+	TITLE="$DUEDATE - ${TITLE}"
+	QUERY="{ \"query\": \"{ issues(filter: { title: { eq: \\\"${TITLE}\\\" } state: { name: { nin: [\\\"Canceled\\\", \\\"Done\\\"] } } }) { nodes { identifier title state { name} }}}\" }"
+	RESULT=$(http_post "$QUERY" | jq '.data.issues.nodes | length')
+	if (( RESULT > 0 )); then
+		echo "==> SKIPPING - Issue '$TITLE' exists already!"
+		continue
+	else
+		echo "==> Creating issue '$TITLE'"
+	fi
+	if [[ -z "$PARENT" ]]; then
+		QUERY="{ \"query\": \"mutation IssueCreate { issueCreate( input: { title: \\\"${TITLE}\\\" descriptionData: \\\"${DESCD}\\\" teamId: \\\"${TEAMID}\\\" assigneeId: \\\"${ASSID}\\\"                             stateId: \\\"${STAID}\\\" dueDate: \\\"${DUEDATE}\\\" estimate: $ESTIMATE priority: $PRIOR }) { success issue {identifier state {name}} } }\" }"
+	else
+		QUERY="{ \"query\": \"mutation IssueCreate { issueCreate( input: { title: \\\"${TITLE}\\\" descriptionData: \\\"${DESCD}\\\" teamId: \\\"${TEAMID}\\\" assigneeId: \\\"${ASSID}\\\" parentId: \\\"${PARENT}\\\" stateId: \\\"${STAID}\\\" dueDate: \\\"${DUEDATE}\\\" estimate: $ESTIMATE priority: $PRIOR }) { success issue {identifier state {name}} } }\" }"
+	fi
+	# print_data "create issue query" "$QUERY"
 	echo "$QUERY" > kiho-linear-recurring.json
-	RESULT=$(http_post "$QUERY" | jq -cr '.data.issueCreate.success')
-	echo "==> Success: '$RESULT'"
+	RESULT=$(http_post "$QUERY")
+	# print_data "create issue result" "$RESULT"
+	echo "==> Success: $(echo "$RESULT" | jq -cr '.data.issueCreate | [.success, .issue.identifier, .issue.state.name] | @csv')"
 done
