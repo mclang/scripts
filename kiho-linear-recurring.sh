@@ -7,7 +7,8 @@ set -e
 set -u
 
 # Read Linear API key from config file:
-API_KEY=$(cat kiho-linear-recurring.cfg)
+BASEDIR=$(dirname "$(readlink -nf $0)")
+API_KEY=$(cat "${BASEDIR}/kiho-linear-recurring.cfg")
 API_URL="https://api.linear.app/graphql"
 
 
@@ -124,3 +125,4 @@ for TPLID in "${TEMPLATES[@]}"; do
 	# print_data "create issue result" "$RESULT"
 	echo "==> Success: $(echo "$RESULT" | jq -cr '.data.issueCreate | [.success, .issue.identifier, .issue.state.name] | @csv')"
 done
+
