@@ -1,3 +1,15 @@
+### Custom git ignores ###
+
+# Ignore ALL files EXCEPT files in the sub-directories:
+# NOTE: Should be BEFORE `gitignore.io` ones b/c last match decides if file is ognored or not!
+*
+!*/
+!*/*
+
+*.cfg
+*.json
+
+
 
 # Created by https://www.gitignore.io/api/vim,linux,visualstudiocode
 
@@ -37,8 +49,4 @@ tags
 !.vscode/extensions.json
 
 # End of https://www.gitignore.io/api/vim,linux,visualstudiocode
-
-# Custom git ignores
-*.cfg
-*.json
 
