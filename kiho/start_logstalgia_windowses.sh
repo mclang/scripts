@@ -44,10 +44,11 @@ for server in "${!SERVERS[@]}"; do
 	NAME="${SERVER_NAMES[$server]}"
 	echo "Starting Logstalgia for '$NAME: ${FILES[@]}'"
 
-	# Remember to use '-t' with SSH - otherwise 'tail' stays up even after SSH connection is killed
+	# Remember to use `-t` with SSH - otherwise 'tail' process might stay up even after SSH connection is killed.
+	# Enable compression using `-C` - according to nethogs it reduces network usage from ~50 KB/sec to ~5 KB/sec!
 	# No need(?) to '2>&1' b/c 'nohup' does that already
 	if (( ${#FILES[@]} == 1 )); then
-		nohup ssh -t "$server" tail -f "${FILES[0]}" | logstalgia -$LOGS_WIN_SIZE $LOGS_PARAMS --title "$NAME" > /dev/null &
+		nohup ssh -Ct "$server" tail -f "${FILES[0]}" | logstalgia -$LOGS_WIN_SIZE $LOGS_PARAMS --title "$NAME" > /dev/null &
 	else
 		echo "==> multitail here !!!"
 		# http://seengee.co.uk/2012/09/08/using-multitail-for-monitoring-multiple-log-files/
