@@ -4,7 +4,7 @@
 # NOTE: Should be BEFORE `gitignore.io` ones b/c last match decides if file is ognored or not!
 *
 !*/
-!*/*
+!*/**
 
 *.cfg
 *.json
