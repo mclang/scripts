@@ -102,6 +102,18 @@ EOF
 )"
 
 # echo -e "JSON PAYLOAD:\n$JSON_PAYLOAD"
+# exit 0
+
+# URL="https://v3.kiho.fi/api/v1/punch?mode=latest"
+# URL="https://v3.kiho.fi/api/v1/punch?orderBy=timestamp+DESC&pageSize=1"
+# URL="https://v3.kiho.fi/api/users/27874/punch?mode=latest"
+# echo "RUNNING '$URL'"
+# /usr/bin/curl \
+# 	-X GET \
+# 	-H "Authorization: $API_KEY" \
+# 	-H "Content-Type: application/json" \
+# 	"$URL"
+# exit 0
 
 # Use curl to POST data:
 # -X: Specify request type, here POST
@@ -117,3 +129,5 @@ EOF
 	-H "Content-Type: application/json" \
 	-d "$JSON_PAYLOAD" \
 	$API_URL
+exit 0
+
