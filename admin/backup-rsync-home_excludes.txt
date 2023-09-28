@@ -15,7 +15,7 @@
 # - Watch for trailing `/`: Using it in the END means that the CONTENTS are synched into the destination, not the directory!
 # - Check backups for Steam games and the like (https://www.toptal.com/developers/gitignore/api/vim,linux)
 #
-# Updated: 24.08.2021
+# Updated: 27.09.2023 (when backing up to Samsung Portable SSD)
 #
 # !!! USED PREVIOUSLY TO __MOVE__ HOME - FIX FOR PROPER BACKUP !!!
 # - Enable more excludes
@@ -24,7 +24,10 @@
 #
 
 ###  USE `[!]` IN NAME TO EXCLUDE IT  ###
+# Disabled the default/normal backup exclude b/c in this case I WANT IT ALL (except... you know)
 #- *\[!\]*
+#- *\[!B2\]*
+- *\(oYo\)*
 
 
 ###  BACKUP FILES, CACHES, TEMPS, ETC  ###
@@ -46,40 +49,43 @@
 - *[.-_][Tt][Ee][Mm][Pp]
 - *[.-_][Ss][Ww][Pp]
 - Enpass/Backups/
+- Games/
+- My Games/
+- Streets of Rogue/
+- Xenonaut Saves/
 
 
 ###  IMPORTANT THINGS THAT HAVE TO BE INCLUDED  ###
-# Including Steam and other game saves...
+# Including Mozilla and some game configs...
 # NOTE: Directory must be first INCLUDED then EXCLUDED - otherwise its contents are NOT scanned!
 + .config/
++ .config/gamemode.ini
++ .config/starship.toml
++ .config/user-dirs.*
++ .config/alacritty/
++ .config/barrier/
++ .config/bottom/
++ .config/broot/
 + .config/darktable/
 + .config/dispcalGUI/
++ .config/dunst/
++ .config/fish/
++ .config/i3
++ .config/sway/
 + .config/lutris/
++ .config/nitrogen/
++ .config/nvim/
 + .config/StardewValley/
 + .config/syncthing/
 + .config/syncthing/config.xml
 - .config/syncthing/*
++ .config/systemd/
 + .config/vivaldi/
 + .config/vivaldi/Default/
 + .config/vivaldi/Default/Sessions/
 - .config/vivaldi/Default/*
 - .config/vivaldi/*
 - .config/*
-
-+ .local/
-+ .local/share/
-+ .local/share/Almost*Human/
-+ .local/share/Daedalic Entertainment GmbH/
-+ .local/share/DoorKickers/
-# + .local/share/Euro Truck Simulator 2/    NOTE: HUGE with mods and the like!
-+ .local/share/[Ff]aster[Tt]han[Ll]ight/
-+ .local/share/feral-interactive/
-+ .local/share/FrozenSynapse/
-+ .local/share/Paradox Interactive/
-+ .local/share/Terraria/
-+ .local/share/twotribes/
-- .local/share/*
-- .local/*
 
 - .mozilla/**/*crashrecovery*
 - .mozilla/**/*default-backup/
@@ -96,9 +102,16 @@
 - .mozilla/firefox/*
 - .mozilla/*
 
++ .gramps/
+- .gramps/**/plugins/
 + .ssh/
 - .ssh/config
++ .tmux.conf
++ .tmux/
 + .zsnes/
++ .vimrc
++ .wakatime.cfg
++ .wakatime/
 
 
 ### CODING RELATED THINGS  ###
@@ -110,6 +123,7 @@
 + */**/.github/
 + */**/.vscode/
 + .wakatime-project
+- ansible/galaxy/
 - build/
 - packages/
 - [Dd]ebug*/
@@ -121,7 +135,67 @@
 - [Ll]og/
 
 
-###  GOOGLE PICASA THINGS FROM TIMES OF OLD  ##
+### GAMING & LOCAL SHARE ###
++ .local/
++ .local/share/
++ .local/share/Almost*Human/
++ .local/share/barrier/
++ .local/share/broot/
++ .local/share/DBeaverData/
++ .local/share/Daedalic Entertainment GmbH/
++ .local/share/DoorKickers/
+# + .local/share/Euro Truck Simulator 2/    NOTE: HUGE with mods and the like!
++ .local/share/[Ff]aster[Tt]han[Ll]ight/
++ .local/share/feral-interactive/
++ .local/share/fish/
+- .local/share/fish/generated_completions/
++ .local/share/FrozenSynapse/
+# + .local/share/nvim/                      NOTE: Should contain only cache/transient files?
++ .local/share/Paradox Interactive/
++ .local/share/Terraria/
++ .local/share/twotribes/
+
++ .local/share/Steam/
++ .local/share/Steam/steamapps/
++ .local/share/Steam/steamapps/common/
++ .local/share/Steam/steamapps/common/MechWarrior 5 Mercenaries/
++ .local/share/Steam/steamapps/common/MechWarrior 5 Mercenaries/MW5Mercs/
++ .local/share/Steam/steamapps/common/MechWarrior 5 Mercenaries/MW5Mercs/Mods/
++ .local/share/Steam/steamapps/common/MechWarrior 5 Mercenaries/MW5Mercs/Plugins/
+- .local/share/Steam/steamapps/common/MechWarrior 5 Mercenaries/MW5Mercs/*
+- .local/share/Steam/steamapps/common/MechWarrior 5 Mercenaries/*
+- .local/share/Steam/steamapps/common/*
+
+# THIS IS... CRAZY!
++ .local/share/Steam/steamapps/compatdata/
++ .local/share/Steam/steamapps/compatdata/784080/
++ .local/share/Steam/steamapps/compatdata/784080/pfx/
++ .local/share/Steam/steamapps/compatdata/784080/pfx/drive_c/
++ .local/share/Steam/steamapps/compatdata/784080/pfx/drive_c/users/
++ .local/share/Steam/steamapps/compatdata/784080/pfx/drive_c/users/steamuser/
++ .local/share/Steam/steamapps/compatdata/784080/pfx/drive_c/users/steamuser/AppData/
++ .local/share/Steam/steamapps/compatdata/784080/pfx/drive_c/users/steamuser/AppData/Local/
++ .local/share/Steam/steamapps/compatdata/784080/pfx/drive_c/users/steamuser/AppData/Local/MW5Mercs/
++ .local/share/Steam/steamapps/compatdata/784080/pfx/drive_c/users/steamuser/AppData/Local/MW5Mercs/Saved/
++ .local/share/Steam/steamapps/compatdata/784080/pfx/drive_c/users/steamuser/AppData/Local/MW5Mercs/Saved/SavedHOTAS/
++ .local/share/Steam/steamapps/compatdata/784080/pfx/drive_c/users/steamuser/AppData/Local/MW5Mercs/Saved/SaveGames/
+- .local/share/Steam/steamapps/compatdata/784080/pfx/drive_c/users/steamuser/AppData/Local/MW5Mercs/Saved/*
+- .local/share/Steam/steamapps/compatdata/784080/pfx/drive_c/users/steamuser/AppData/Local/MW5Mercs/*
+- .local/share/Steam/steamapps/compatdata/784080/pfx/drive_c/users/steamuser/AppData/Local/*
+- .local/share/Steam/steamapps/compatdata/784080/pfx/drive_c/users/steamuser/AppData/*
+- .local/share/Steam/steamapps/compatdata/784080/pfx/drive_c/users/steamuser/*
+- .local/share/Steam/steamapps/compatdata/784080/pfx/drive_c/users/*
+- .local/share/Steam/steamapps/compatdata/784080/pfx/drive_c/*
+- .local/share/Steam/steamapps/compatdata/784080/pfx/*
+- .local/share/Steam/steamapps/compatdata/784080/*
+- .local/share/Steam/steamapps/compatdata/*
+
+- .local/share/Steam/steamapps/*
+- .local/share/Steam/*
+- .local/share/*
+- .local/*
+
+###  GOOGLE PICASA THINGS FROM TIMES OF OLD  ###
 # NOTE: Especially `.picasaoriginals` is important b/c it contains original photos!
 + [Pp]icasa.ini
 + .picasa.ini
@@ -133,15 +207,27 @@
 - .stversions/
 - .SyncArchive/
 - .SyncID
-- [Ss]hare*/
+- FMEO-WIP/
++ [Ss]hare*/
++ [Ss]hare*/[Nn]ext[Cc]loud/
++ [Ss]hare*/Remote Desktop Mount/
++ [Ss]hare*/[Ss]ync[Tt]hing/
+- [Ss]hare*/*
 
 
-###  UNNECESSARY XDG DEFAULT DIRECTORIES  ##
+###  UNNECESSARY XDG DEFAULT DIRECTORIES  ###
 # NOTE: Configured in `~/.config/user-dirs.dirs`
 - Desktop/
 #- Downloads/
 - Public/
 
+
+###  TEST FILES THAT MIGHT BE BIG  ###
+- Downloads/[Tt]est*/
+# - Projects/[Tt]est*/          # IGNORES Obsidian testing files :/
+- Pictures/[Tt]est*/
+- Music/[Tt]est*/
+- Videos/[Tt]est*/
 
 ###  USELESS CRUFT FROM LINUX  ###
 - flatpak/
@@ -171,3 +257,4 @@
 # --> No need to exclude e.g `.dbus` individually
 # NOTE: This MUST be the LAST rule in case some hidden things are INCLUDED above!
 - .*
+
