@@ -17,6 +17,16 @@
 # - https://streaminglearningcenter.com/encoding/choosing-a-preset-for-svt-av1-or-any-codec.html
 # - https://www.reddit.com/r/AV1/comments/s7yyf9/help_me_understand_svtav1_parameters/
 # - https://www.reddit.com/r/AV1/comments/w9lnjz/crf_value_for_efficient_4k_encoding/
+# - https://ottverse.com/analysis-of-svt-av1-presets-and-crf-values/
+#
+# Also note these taken from https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/Docs/Ffmpeg.md
+# - A good starting point for 1080p video is `crf=30`.
+# - For VOD (Video On Demand), a setting a key frame once per second or so is a common
+# choice. In other contexts, less frequent key frames (such as 5 or 10 seconds) are preferred.
+# - Using good value for `film-grain` gives usually good bitrate savings.A value of 8
+# is a reasonable starting point for live-action video with a normal amount of grain.
+# - Tuning for subjective quality (`tune=0`) instead of PSNR (`tune=1`, the default)
+# can result in a sharper image and higher psycho-visual fidelity.
 #
 # https://github.com/xiph/rav1e
 #
