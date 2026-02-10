@@ -3,18 +3,29 @@
 # https://github.com/ytdl-org/youtube-dl
 #
 # About selecting downloaded audio/video format:
-# https://github.com/ytdl-org/youtube-dl#user-content-format-selection-examples
+# - https://github.com/yt-dlp/yt-dlp
+# - https://www.ditig.com/yt-dlp-cheat-sheet
+# - https://roundproxies.com/blog/yt-dlp
 #
-# Usefull examples:
-# - `youtube-dl -F <video url>`
-# - `youtube-dl -f 247+251 <video url>`
-# - `youtune-dl -f 'bestvideo[ext=webm][height<=1080]+bestaudio[ext=webm]'`
+# Useful examples:
+# - List formats:        `yt-dlp -F <video url>`
+# - List subtitles:      `yt-dlp --list-subs <video url>`
+# - Download&Mux V+A:    `yt-dlp -f 247+251 <video url>`
+# - Best max 1080p WebM: `yt-dlp -f 'bv[ext=webm][height<=1080]+ba[ext=webm]'`
+# - Write subs into external file: `yt-dlp --sub-lang en --write-subs`
+# - Embed subs into video file:    `yt-dlp --sub-lang en --embed-subs`
+#
+# Fallout Season One as 1080p webm with EN & FI auto-subtitles (vtt files):
+# ```
+# $ yt-dlp -f "bv[ext=webm]+ba[ext=webm]" -i -o "%(title)s.%(ext)s" \
+#   --cookies-from-browser firefox --download-archive archive.txt --no-overwrites --mark-watched \
+#   --write-auto-subs --sub-langs "en,fi" --sleep-subtitles 60 \
+#   'https://www.youtube.com/playlist?list=PLWz2DO39R-NX9gYByO7231inaftQYqI8v'
+# ```
 #
 # Downloads ONLY videos released AFTER given date (inclusive) if it is provided as second parameter.
 #
-set -e
-set -u
-set -o pipefail
+set -euo pipefail
 
 function print_usage ()
 {
