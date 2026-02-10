@@ -16,7 +16,7 @@ CLIENT_BIN="transmission-gtk"
 CLIENT_CFG="${HOME}/.config/transmission/settings.json"
 CLIENT_PID=""
 WG_GATEWAY="10.2.0.1"
-WG_INTFACE="$(ip link show | grep -oP 'wg[a-zA-Z0-9_\-]+')"
+WG_INTFACE="$(ip link show | grep -ioP '[A-Z0-9_\-]*wg[A-Z0-9_\-]+')"
 PUBLIC_PORT=""
 
 # NOTE: These need to be set AFTER the above definitions, otherwise `e`
@@ -42,6 +42,12 @@ if pgrep -f "$CLIENT_BIN" > /dev/null; then
 fi
 if [[ -z "$WG_INTFACE" ]]; then
 	echo "ERROR: Wireguard interface not available!"
+	exit 1
+fi
+
+# Check that NAT-PMP gateway is accessible and configured right:
+if ! ping -c 1 -W 2 "$WG_GATEWAY" > /dev/null; then
+	echo "ERROR: Wireguard NAT-PMP gateway '$WG_GATEWAY' cannot be reached!"
 	exit 1
 fi
 # NOTE: Didn't find if this can be done using normal return value :/
