@@ -1,11 +1,14 @@
 #
-# Excludes for `rsync` for moving ALL things to new computer. Example command:
-# ```
-# $ rsync -av --delete --delete-excluded --exclude-from=/home/mclang/bin/backup-rsync-exclude-useless-cruft.txt /home/mclang <target destination dir>
-# ```
+# List of excludes to be used with `rsync` when moving **ALL THE THINGS** into a new computer.
+# ==> Does NOT exclude files or directories containing `[!]` or `[!B2]`!
 #
-# Updated: 19.08.2021
-#   
+# Example command:
+#```
+# $ rsync -av --delete --delete-excluded --exclude-from=/home/mclang/bin/backup-rsync-exclude-useless-cruft.txt /home/mclang <target destination dir>
+#```
+#
+# Updated: 09.01.2025 (on Asus Zephyrus G14)
+#
 
 ###  BACKUP FILES, CACHES, TEMPS, ETC  ###
 # NOTE: These EXCLUDES all matching files ALSO from directories included below, e.g `.ssh/id_rsa.bak`!
@@ -17,7 +20,8 @@
 - System Volume Information/
 - *[Tt]rash*/
 - thumbnail
-#- *.~* EXCLUDES HIDDEN FILES !!!
+- *~
+#- *.~* EXCLUDES ALL HIDDEN FILES !!!
 - *.[Bb][Aa][Kk]
 - *.[Oo][Ll][Dd]
 - *.[Oo][Rr][Gg]
@@ -26,12 +30,19 @@
 - *.[Ss][Ww][Pp]
 - Enpass/Backups/
 
-# Beacause NOT all hidden files should be exluded, here is handmade one:
+# Because NOT all hidden files should be excluded, here is a handmade list (09.01.2025):
+- .ansible/
+- .bbot/
+- .cache/
+- .cargo/
 - .cert/
 - .dotnet/
 - .eclipse/
-- .gnupg/
+- .gramps/
+- .hplip/
+- .icons/
 - .java/
+- .local/
 - .kde/
 - .maptool/
 - .mono/
@@ -44,14 +55,24 @@
 - .redhat/
 - .renpy/
 - .rstudio-desktop/
+- .sane/
 - .steam/
 - .swt/
 - .synergy/
 - .templateengine/
+- .terra*/
 - .tmux/
 - .uml/
-- .vscode/
+- .var/
+- .vscode*/
 - .zoom/
+- .aspell*
+- .gnuplot*
+- .lesshst
+- .nanorc
+- .steam*
+- .wget-hsts
+- .xsession*
 
 
 ###  SYNCTHING AND OTHER PUBLIC/SHARED  ###
@@ -68,7 +89,6 @@
 
 
 ###  USELESS CRUFT FROM LINUX  ###
-- .ansible/
 - flatpak/
 - go/
 - lost+found

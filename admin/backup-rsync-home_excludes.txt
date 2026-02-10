@@ -15,16 +15,18 @@
 # - Watch for trailing `/`: Using it in the END means that the CONTENTS are synched into the destination, not the directory!
 # - Check backups for Steam games and the like (https://www.toptal.com/developers/gitignore/api/vim,linux)
 #
-# Updated: 27.09.2023 (when backing up to Samsung Portable SSD)
-#
-# !!! USED PREVIOUSLY TO __MOVE__ HOME - FIX FOR PROPER BACKUP !!!
+# !!! Previously this was used to **MOVE** user HOME to a new computer, but now fixed for proper backup !!!
 # - Enable more excludes
 # - Exclude security things like SSH keys, etc
 # - Check `gitignore.io` for more excludes
+# ==> Check `backup-rsync-exclude-useless-cruft.txt` when MOVING files.
+#
+# Updated: 09.01.2024 (when backing up Asus Zephyrus G14 to Samsung Portable SSD)
 #
 
+
 ###  USE `[!]` IN NAME TO EXCLUDE IT  ###
-# Disabled the default/normal backup exclude b/c in this case I WANT IT ALL (except... you know)
+# Disabled the default/normal backup excludes b/c in this case I WANT IT ALL (except... you know)
 #- *\[!\]*
 #- *\[!B2\]*
 - *\(oYo\)*
@@ -41,7 +43,7 @@
 - *[Tt]rash*/
 - thumbnail
 - *~
-#- *.~* EXCLUDES HIDDEN FILES !!!
+#- *.~* EXCLUDES ALL HIDDEN FILES !!!
 - *[.-_][Bb][Aa][Kk]
 - *[.-_][Oo][Ll][Dd]
 - *[.-_][Oo][Rr][Gg]
@@ -51,6 +53,7 @@
 - Enpass/Backups/
 - Games/
 - My Games/
+- Pictures/**/.git/
 - Streets of Rogue/
 - Xenonaut Saves/
 
@@ -158,6 +161,13 @@
 + .local/share/Steam/
 + .local/share/Steam/steamapps/
 + .local/share/Steam/steamapps/common/
++ .local/share/Steam/steamapps/common/MechWarrior 5 Clans/
++ .local/share/Steam/steamapps/common/MechWarrior 5 Clans/MW5Clans/
++ .local/share/Steam/steamapps/common/MechWarrior 5 Clans/MW5Clans/Mods/
++ .local/share/Steam/steamapps/common/MechWarrior 5 Clans/MW5Clans/Plugins/
+- .local/share/Steam/steamapps/common/MechWarrior 5 Clans/MW5Clans/*
+- .local/share/Steam/steamapps/common/MechWarrior 5 Clans/*
+
 + .local/share/Steam/steamapps/common/MechWarrior 5 Mercenaries/
 + .local/share/Steam/steamapps/common/MechWarrior 5 Mercenaries/MW5Mercs/
 + .local/share/Steam/steamapps/common/MechWarrior 5 Mercenaries/MW5Mercs/Mods/
@@ -166,8 +176,27 @@
 - .local/share/Steam/steamapps/common/MechWarrior 5 Mercenaries/*
 - .local/share/Steam/steamapps/common/*
 
-# THIS IS... CRAZY!
+# THIS IS... BAT SHIT CRAZY!
+# -  538030: Xenonauts 2 (beta)
+# -  784080: MW5: Mercs
+# - 2000890: MW5: Clans
 + .local/share/Steam/steamapps/compatdata/
++ .local/share/Steam/steamapps/compatdata/538030/
++ .local/share/Steam/steamapps/compatdata/538030/pfx/
++ .local/share/Steam/steamapps/compatdata/538030/pfx/drive_c/
++ .local/share/Steam/steamapps/compatdata/538030/pfx/drive_c/users/
++ .local/share/Steam/steamapps/compatdata/538030/pfx/drive_c/users/steamuser/
++ .local/share/Steam/steamapps/compatdata/538030/pfx/drive_c/users/steamuser/My Documents/
++ .local/share/Steam/steamapps/compatdata/538030/pfx/drive_c/users/steamuser/My Documents/My Games/
++ .local/share/Steam/steamapps/compatdata/538030/pfx/drive_c/users/steamuser/My Documents/My Games/Xenonauts 2/
+- .local/share/Steam/steamapps/compatdata/538030/pfx/drive_c/users/steamuser/My Documents/My Games/*
+- .local/share/Steam/steamapps/compatdata/538030/pfx/drive_c/users/steamuser/My Documents/*
+- .local/share/Steam/steamapps/compatdata/538030/pfx/drive_c/users/steamuser/*
+- .local/share/Steam/steamapps/compatdata/538030/pfx/drive_c/users/*
+- .local/share/Steam/steamapps/compatdata/538030/pfx/drive_c/*
+- .local/share/Steam/steamapps/compatdata/538030/pfx/*
+- .local/share/Steam/steamapps/compatdata/538030/*
+
 + .local/share/Steam/steamapps/compatdata/784080/
 + .local/share/Steam/steamapps/compatdata/784080/pfx/
 + .local/share/Steam/steamapps/compatdata/784080/pfx/drive_c/
@@ -188,8 +217,29 @@
 - .local/share/Steam/steamapps/compatdata/784080/pfx/drive_c/*
 - .local/share/Steam/steamapps/compatdata/784080/pfx/*
 - .local/share/Steam/steamapps/compatdata/784080/*
-- .local/share/Steam/steamapps/compatdata/*
 
++ .local/share/Steam/steamapps/compatdata/2000890/
++ .local/share/Steam/steamapps/compatdata/2000890/pfx/
++ .local/share/Steam/steamapps/compatdata/2000890/pfx/drive_c/
++ .local/share/Steam/steamapps/compatdata/2000890/pfx/drive_c/users/
++ .local/share/Steam/steamapps/compatdata/2000890/pfx/drive_c/users/steamuser/
++ .local/share/Steam/steamapps/compatdata/2000890/pfx/drive_c/users/steamuser/AppData/
++ .local/share/Steam/steamapps/compatdata/2000890/pfx/drive_c/users/steamuser/AppData/Local/
++ .local/share/Steam/steamapps/compatdata/2000890/pfx/drive_c/users/steamuser/AppData/Local/MW5Clans/
++ .local/share/Steam/steamapps/compatdata/2000890/pfx/drive_c/users/steamuser/AppData/Local/MW5Clans/Saved/
++ .local/share/Steam/steamapps/compatdata/2000890/pfx/drive_c/users/steamuser/AppData/Local/MW5Clans/Saved/SavedHOTAS/
++ .local/share/Steam/steamapps/compatdata/2000890/pfx/drive_c/users/steamuser/AppData/Local/MW5Clans/Saved/SaveGames/
+- .local/share/Steam/steamapps/compatdata/2000890/pfx/drive_c/users/steamuser/AppData/Local/MW5Clans/Saved/*
+- .local/share/Steam/steamapps/compatdata/2000890/pfx/drive_c/users/steamuser/AppData/Local/MW5Clans/*
+- .local/share/Steam/steamapps/compatdata/2000890/pfx/drive_c/users/steamuser/AppData/Local/*
+- .local/share/Steam/steamapps/compatdata/2000890/pfx/drive_c/users/steamuser/AppData/*
+- .local/share/Steam/steamapps/compatdata/2000890/pfx/drive_c/users/steamuser/*
+- .local/share/Steam/steamapps/compatdata/2000890/pfx/drive_c/users/*
+- .local/share/Steam/steamapps/compatdata/2000890/pfx/drive_c/*
+- .local/share/Steam/steamapps/compatdata/2000890/pfx/*
+- .local/share/Steam/steamapps/compatdata/2000890/*
+
+- .local/share/Steam/steamapps/compatdata/*
 - .local/share/Steam/steamapps/*
 - .local/share/Steam/*
 - .local/share/*
@@ -219,6 +269,7 @@
 # NOTE: Configured in `~/.config/user-dirs.dirs`
 - Desktop/
 #- Downloads/
+- Downloads/[Tt]orrent*/
 - Public/
 
 
@@ -257,4 +308,3 @@
 # --> No need to exclude e.g `.dbus` individually
 # NOTE: This MUST be the LAST rule in case some hidden things are INCLUDED above!
 - .*
-
